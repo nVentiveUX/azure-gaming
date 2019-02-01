@@ -19,7 +19,7 @@ $webClient = new-object System.Net.WebClient
 ################################################################################
 
 $admin_username = [Environment]::UserName
-$admin_password = Read-Host 'Admin Password:'
+$admin_password = Read-Host 'Admin Password'
 $nvidia_version = "411.98"
 
 ################################################################################
@@ -38,10 +38,6 @@ Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
 Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
 Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
 Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
-
-Write-Output "Prevent Windows to lock the screen."
-$registry = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
-Set-ItemProperty $registry "NoLockScreen" -Value "1" -type DWORD
 
 # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
 Write-Output "Create disconnect shortcut under C:\disconnect.lnk"
