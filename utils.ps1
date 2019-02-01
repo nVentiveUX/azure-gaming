@@ -18,7 +18,7 @@ $webClient = new-object System.Net.WebClient
 # CUSTOM VARS. PLEASE EDIT                                                     #
 ################################################################################
 
-$admin_username = Read-Host 'Admin Username:'
+$admin_username = [Environment]::UserName
 $admin_password = Read-Host 'Admin Password:'
 $nvidia_version = "411.98"
 
