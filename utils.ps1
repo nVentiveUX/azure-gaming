@@ -115,7 +115,7 @@ Write-Output "Downloading and installing Windows Development Kit"
 Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
 
 $cert = "vb_cert.cer"
-$url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
+$url = "https://github.com/nVentiveUX/azure-gaming/raw/master/$cert"
 
 Write-Output "Downloading vb certificate from $url"
 $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
