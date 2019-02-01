@@ -20,7 +20,8 @@ $webClient = new-object System.Net.WebClient
 
 $admin_username = [Environment]::UserName
 $admin_password = Read-Host 'Admin Password'
-$nvidia_version = "411.98"
+# From https://docs.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup#nvidia-grid-drivers
+$nvidia_version = "411.81"
 
 ################################################################################
 # DO NOT EDIT BELOW THIS LINE                                                  #
@@ -52,7 +53,8 @@ $Shortcut.Save()
 
 Write-Output "Installing Nvidia Driver"
 $driver_file = "nvidia-driver.exe"
-$url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$nvidia_version/$nvidia_version-tesla-desktop-win10-64bit-international.exe"
+# From https://docs.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup#nvidia-grid-drivers
+$url = "https://go.microsoft.com/fwlink/?linkid=874181"
 
 Write-Output "Downloading Nvidia M60 driver from URL $url"
 $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
