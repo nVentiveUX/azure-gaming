@@ -140,32 +140,29 @@ if [[ -z $AZ_LB ]]; then
     exit 1
 fi
 
-printf "Switch to ${AZ_SUBSCRIPTION_ID} subscription..."
+printf "Switch to ${AZ_SUBSCRIPTION_ID} subscription...\\n"
 az account set --subscription "${AZ_SUBSCRIPTION_ID}" --output none
-printf "Done.\\n"
 
 if ! az network vnet show --resource-group ${AZ_VNET_RG} --name ${AZ_VNET} --output none; then
     printf "VNET ${AZ_VNET} is missing. Please create it before...\\n"
     exit 1
 else
-    printf "Create a new ${AZ_VNET_SUBNET} subnet named ${AZ_VNET_SUBNET_NAME}..."
+    printf "Create a new ${AZ_VNET_SUBNET} subnet named ${AZ_VNET_SUBNET_NAME}...\\n"
     az network vnet subnet create \
         --resource-group "${AZ_VNET_RG}" \
         --vnet-name "${AZ_VNET}" \
         --name "${AZ_VNET_SUBNET_NAME}" \
         --address-prefix "${AZ_VNET_SUBNET}" \
         --output none
-    printf "Done.\\n"
 fi
 
-printf "Create ${AZ_VM_RG} resource group..."
+printf "Create ${AZ_VM_RG} resource group...\\n"
 az group create \
     --location "${AZ_LOCATION}" \
     --name "${AZ_VM_RG}" \
     --output none
-printf "Done.\\n"
 
-printf "Create ${AZ_LB}.${AZ_LOCATION}.cloudapp.azure.com basic public IP address..."
+printf "Create ${AZ_LB}.${AZ_LOCATION}.cloudapp.azure.com basic public IP address...\\n"
 az network public-ip create \
     --name "${AZ_LB}-public-ip" \
     --resource-group "${AZ_VM_RG}" \
@@ -174,9 +171,8 @@ az network public-ip create \
     --version "IPv4" \
     --dns-name "${AZ_LB}" \
     --output none
-printf "Done.\\n"
 
-printf "Create ${AZ_LB} basic load balancer..."
+printf "Create ${AZ_LB} basic load balancer...\\n"
 az network lb create \
     --name "${AZ_LB}" \
     --resource-group "${AZ_VM_RG}" \
@@ -185,9 +181,8 @@ az network lb create \
     --backend-pool-name "VMSSBackend" \
     --sku "Basic" \
     --output none
-printf "Done.\\n"
 
-printf "Create NAT pool rules for RDP connection..."
+printf "Create NAT pool rules for RDP connection...\\n"
 az network lb inbound-nat-pool create \
     --name "TCP443to3389" \
     --resource-group "${AZ_VM_RG}" \
@@ -198,16 +193,14 @@ az network lb inbound-nat-pool create \
     --frontend-ip-name "${AZ_LB}-public-ip" \
     --protocol "tcp" \
     --output none
-printf "Done.\\n"
 
-printf "Create NSG ${AZ_VM}-nsg..."
+printf "Create NSG ${AZ_VM}-nsg...\\n"
 az network nsg create \
     --name "${AZ_VM}-nsg" \
     --resource-group "${AZ_VM_RG}" \
     --output none
-printf "Done.\\n"
 
-printf "Create NSG rule to allow RDP..."
+printf "Create NSG rule to allow RDP...\\n"
 az network nsg rule create \
     --name "Allow_RDP" \
     --nsg-name "${AZ_VM}-nsg" \
@@ -222,7 +215,6 @@ az network nsg rule create \
     --protocol "tcp" \
     --description "Allow RDP traffic from Any" \
     --output none
-printf "Done.\\n"
 
 printf "Create ${AZ_VM} Azure Virtual Machine Scale Set...\\n"
 az vmss create \
@@ -242,7 +234,4 @@ az vmss create \
     --lb-nat-pool-name "TCP443to3389" \
     --output none
 printf "Done.\\n\\n"
-
 printf "Please use Microsoft Remote Desktop app connect to ${AZ_LB}.${AZ_LOCATION}.cloudapp.azure.com:5000 or :5001.\\n"
-printf "You can run this script from powershell admin prompt to configure the VM:\\n"
-printf "iex ((new-object net.webclient).DownloadString('https://github.com/nVentiveUX/azure-gaming/raw/master/utils.ps1'))\\n"
