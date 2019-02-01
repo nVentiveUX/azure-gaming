@@ -61,7 +61,7 @@ $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
 
 Write-Output "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
 Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
-Start-Process -FilePath "C:\NVIDIA\DisplayDriver\$nvidia_version\Win10_64\International\setup.exe" -ArgumentList "-s", "-noreboot" -Wait
+Start-Process -FilePath "C:\NVIDIA\$nvidia_version\setup.exe" -ArgumentList "-s", "-noreboot" -Wait
 
 ################################################################################
 # Disabling Hyper-V Video
