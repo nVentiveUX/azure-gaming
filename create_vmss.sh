@@ -245,4 +245,4 @@ printf "Done.\\n\\n"
 
 printf "Please use Microsoft Remote Desktop app connect to ${AZ_LB}.${AZ_LOCATION}.cloudapp.azure.com:5000 or :5001.\\n"
 printf "You can run this script from powershell admin prompt to configure the VM:\\n"
-printf "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/nVentiveUX/azure-gaming/master/utils.ps1'))\\n"
+printf "iex ((new-object net.webclient).DownloadString('https://github.com/nVentiveUX/azure-gaming/raw/master/utils.ps1'))\\n"

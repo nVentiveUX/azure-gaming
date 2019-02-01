@@ -7,7 +7,7 @@
 
     You can run this script from powershell admin prompt using the following:
 
-      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/nVentiveUX/azure-gaming/master/utils.ps1'))
+      iex ((new-object net.webclient).DownloadString('https://github.com/nVentiveUX/azure-gaming/raw/master/utils.ps1'))
 #>
 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
