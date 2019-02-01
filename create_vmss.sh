@@ -144,17 +144,25 @@ printf "Switch to ${AZ_SUBSCRIPTION_ID} subscription...\\n"
 az account set --subscription "${AZ_SUBSCRIPTION_ID}" --output none
 
 if ! az network vnet show --resource-group ${AZ_VNET_RG} --name ${AZ_VNET} --output none; then
-    printf "VNET ${AZ_VNET} is missing. Please create it before...\\n"
-    exit 1
-else
-    printf "Create a new ${AZ_VNET_SUBNET} subnet named ${AZ_VNET_SUBNET_NAME}...\\n"
-    az network vnet subnet create \
+    printf "Create ${AZ_VNET_RG} resource group...\\n"
+    az group create \
+        --location "${AZ_LOCATION}" \
+        --name "${AZ_VNET_RG}"
+
+    printf "Create a new 10.1.0.0/16 VNET named ${AZ_VNET}...\\n"
+    az network vnet create \
         --resource-group "${AZ_VNET_RG}" \
-        --vnet-name "${AZ_VNET}" \
-        --name "${AZ_VNET_SUBNET_NAME}" \
-        --address-prefix "${AZ_VNET_SUBNET}" \
-        --output none
+        --name "${AZ_VNET}" \
+        --address-prefix "10.1.0.0/16"
 fi
+
+printf "Create a new ${AZ_VNET_SUBNET} subnet named ${AZ_VNET_SUBNET_NAME}...\\n"
+az network vnet subnet create \
+    --resource-group "${AZ_VNET_RG}" \
+    --vnet-name "${AZ_VNET}" \
+    --name "${AZ_VNET_SUBNET_NAME}" \
+    --address-prefix "${AZ_VNET_SUBNET}" \
+    --output none
 
 printf "Create ${AZ_VM_RG} resource group...\\n"
 az group create \
@@ -217,10 +225,11 @@ az network nsg rule create \
     --output none
 
 printf "Create ${AZ_VM} Azure Virtual Machine Scale Set...\\n"
+# az vm image list --publisher MicrosoftWindowsDesktop --all -otable
 az vmss create \
     --name "${AZ_VM}" \
     --resource-group "${AZ_VM_RG}" \
-    --image "MicrosoftWindowsDesktop:Windows-10:rs5-pron:17763.253.67" \
+    --image "MicrosoftWindowsDesktop:Windows-10:rs4-pron:17134.523.65" \
     --vm-sku "Standard_NV6" \
     --storage-sku "StandardSSD_LRS" \
     --instance-count "1" \

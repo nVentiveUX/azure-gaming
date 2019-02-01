@@ -4,15 +4,7 @@
 
 .DESCRIPTION
     This script requires administrative privileges.
-
-    You can run this script from powershell admin prompt using the following:
-
-      iex ((new-object net.webclient).DownloadString('https://github.com/nVentiveUX/azure-gaming/raw/master/utils.ps1'))
 #>
-
-################################################################################
-# DO NOT EDIT BELOW THIS LINE                                                  #
-################################################################################
 
 $script_name = "utils.psm1"
 Import-Module "C:\$script_name"
@@ -23,5 +15,14 @@ Install-VirtualAudio
 Install-Steam
 Install-EpicGameLauncher
 Install-Parsec
-Restart-Computer
 
+Write-Host -ForegroundColor Yellow "Would you like to reboot now?"
+$Readhost = Read-Host "(Y/N) Default is no"
+Switch ($ReadHost) {
+    Y {Write-host "Rebooting now..."; Start-Sleep -s 2; Restart-Computer}
+    N {Write-Host "Exiting script in 5 seconds."; Start-Sleep -s 5}
+    Default {Write-Host "Exiting script in 5 seconds"; Start-Sleep -s 5}
+}
+
+# End of script
+exit

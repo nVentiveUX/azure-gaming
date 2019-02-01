@@ -4,31 +4,16 @@
 
 .DESCRIPTION
     This script requires administrative privileges.
-
-    You can run this script from powershell admin prompt using the following:
-
-      iex ((new-object net.webclient).DownloadString('https://github.com/nVentiveUX/azure-gaming/raw/master/utils.ps1'))
 #>
-
-################################################################################
-# CUSTOM VARS. PLEASE EDIT                                                     #
-################################################################################
 
 $admin_username = [Environment]::UserName
 $admin_password = Read-Host 'Admin Password'
-# From https://docs.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup#nvidia-grid-drivers
-$nvidia_version = "411.81"
-
-################################################################################
-# DO NOT EDIT BELOW THIS LINE                                                  #
-################################################################################
-
 
 function Get-UtilsScript ($script_name) {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $url = "https://github.com/nVentiveUX/azure-gaming/raw/master/$script_name"
     Write-Output "Downloading utils script from $url"
-    $webClient = new-object System.Net.WebClient
-    $webClient.DownloadFile($url, "C:\$script_name")
+    (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
 }
 
 $script_name = "utils.psm1"
@@ -36,6 +21,16 @@ Get-UtilsScript $script_name
 Import-Module "C:\$script_name"
 
 Registy-tweaks
+Install-7zip
 Install-NvidiaDriver
-Restart-Computer
 
+Write-Host -ForegroundColor Yellow "Would you like to reboot now?"
+$Readhost = Read-Host "(Y/N) Default is no"
+Switch ($ReadHost) {
+    Y {Write-host "Rebooting now..."; Start-Sleep -s 2; Restart-Computer}
+    N {Write-Host "Exiting script in 5 seconds."; Start-Sleep -s 5}
+    Default {Write-Host "Exiting script in 5 seconds"; Start-Sleep -s 5}
+}
+
+# End of script
+exit
