@@ -101,6 +101,7 @@ function Disable-Devices {
   Write-Output "Disabling Hyper-V Video"
   Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
   Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
+  Get-Device | Where-Object -Property Name -Like "Generic PnP Monitor" | Where DeviceParent -like "*BasicDisplay*" | Disable-Device  -Confirm:$false
 }
 
 ################################################################################
