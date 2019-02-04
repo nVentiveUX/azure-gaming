@@ -192,7 +192,7 @@ az network lb create \
 
 printf "Create NAT pool rules for RDP connection...\\n"
 az network lb inbound-nat-pool create \
-    --name "TCP443to3389" \
+    --name "${AZ_VM}-natpool" \
     --resource-group "${AZ_VM_RG}" \
     --lb-name "${AZ_LB}" \
     --frontend-port-range-start "50000" \
@@ -240,7 +240,7 @@ az vmss create \
     --nsg "${AZ_VM}-nsg" \
     --public-ip-address "" \
     --load-balancer "${AZ_LB}" \
-    --lb-nat-pool-name "TCP443to3389" \
+    --lb-nat-pool-name "${AZ_VM}-natpool" \
     --output none
 printf "Done.\\n\\n"
 printf "Please use Microsoft Remote Desktop app connect to ${AZ_LB}.${AZ_LOCATION}.cloudapp.azure.com:5000 or :5001.\\n"
