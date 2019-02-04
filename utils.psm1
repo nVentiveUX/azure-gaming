@@ -117,7 +117,12 @@ function Disable-Devices {
   Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
   Write-Output "Disabling Generic PnP Monitor"
   Get-Device | Where-Object -Property Name -Like "Generic PnP Monitor" | Where DeviceParent -like "*BasicDisplay*" | Disable-Device  -Confirm:$false
-  
+
+  Write-Output "Delete the basic display adapter's drivers (since Parsec still see 2 Display adapter)"
+  takeown /f C:\Windows\System32\Drivers\BasicDisplay.sys
+  icacls C:\Windows\System32\Drivers\BasicDisplay.sys /grant "$env:username`:F"
+  move C:\Windows\System32\Drivers\BasicDisplay.sys C:\Windows\System32\Drivers\BasicDisplay.old
+
   Write-Host -ForegroundColor Green "Done."
 }
 
