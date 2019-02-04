@@ -91,16 +91,17 @@ function Disable-Devices {
   $compressed_file = "DeviceManagement.zip"
   $extract_folder = "DeviceManagement"
 
-  Write-Output "Downloading Device Management Powershell Script from $url"
+  Write-Output "Downloading Device Management Powershell Script"
   (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$compressed_file")
   Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
   Write-Output "Extracting Device Management Powershell Script"
   Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$extract_folder" -Force
 
-  Write-Output "Disabling Hyper-V Video"
   Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
+  Write-Output "Disabling Microsoft Hyper-V Video"
   Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
+  Write-Output "Disabling Generic PnP Monitor"
   Get-Device | Where-Object -Property Name -Like "Generic PnP Monitor" | Where DeviceParent -like "*BasicDisplay*" | Disable-Device  -Confirm:$false
 }
 
@@ -122,18 +123,18 @@ function Install-VirtualAudio {
   $wdk_installer = "wdksetup.exe"
   $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
 
+  Write-Output "Downloading Windows Development Kit installer"
+  (New-Object System.Net.WebClient).DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
+
+  Write-Output "Installing Windows Development Kit"
+  Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
+
   Write-Output "Downloading Virtual Audio Driver"
   (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/$compressed_file", "$PSScriptRoot\$compressed_file")
   Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
   Write-Output "Extracting Virtual Audio Driver"
   Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
-
-  Write-Output "Downloading Windows Development Kit installer"
-  (New-Object System.Net.WebClient).DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
-
-  Write-Output "Downloading and installing Windows Development Kit"
-  Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
 
   Write-Output "Importing vb certificate"
   (Get-AuthenticodeSignature -FilePath "$PSScriptRoot\$driver_folder\vbaudio_cable64_win7.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "$PSScriptRoot\$driver_folder\vbcable.cer" | Out-Null
