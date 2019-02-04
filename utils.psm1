@@ -91,7 +91,7 @@ function Install-NvidiaDriver {
   (Get-Content "$extractFolder\setup.cfg") | Where-Object {$_ -notmatch 'name="\${{(EulaHtmlFile|FunctionalConsentFile|PrivacyPolicyFile)}}'} | Set-Content "$extractFolder\setup.cfg" -Encoding UTF8 -Force
 
   Write-Output "Installing..."
-  Start-Process -FilePath "$extractFolder\setup.exe"  -ArgumentList "-s", "-noreboot", "-noeula" -Wait
+  Start-Process -FilePath "$extractFolder\setup.exe"  -ArgumentList "-s", "-noreboot", "-noeula", "-clean" -Wait
   
   Write-Host -ForegroundColor Green "Done."
 }
