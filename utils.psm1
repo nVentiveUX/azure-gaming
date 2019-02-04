@@ -3,6 +3,8 @@
 ################################################################################
 # Registry tweaks
 function Registy-tweaks {
+  Write-Host -ForegroundColor Cyan "Starting Registy-tweaks function..."
+
   Write-Output "Make the password and account of admin user never expire."
   Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
 
@@ -45,12 +47,16 @@ function Registy-tweaks {
   Write-Output "Do not combine taskbar buttons and no tray hiding stuff"
   Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
   Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name EnableAutoTray -Value 0
+  
+  Write-Host -ForegroundColor Green "Done."
 }
 
 
 ################################################################################
 # Install 7zip
 function Install-7zip {
+  Write-Host -ForegroundColor Cyan "Starting Install-7zip function..."
+
   $7Zip_exe = "7Zip.exe"
   Write-Output "Downloading 7zip into path $PSScriptRoot\$7Zip_exe"
   (New-Object System.Net.WebClient).DownloadFile("https://www.7-zip.org/a/7z1806-x64.exe", "$PSScriptRoot\$7Zip_exe")
@@ -59,11 +65,15 @@ function Install-7zip {
 
   Write-Output "Cleaning up 7zip installation file"
   Remove-Item -Path $PSScriptRoot\$7Zip_exe -Confirm:$false
+  
+  Write-Host -ForegroundColor Green "Done."
 }
 
 ################################################################################
 # Install NVIDIA drivers
 function Install-NvidiaDriver {
+  Write-Host -ForegroundColor Cyan "Starting Install-NvidiaDriver function..."
+
   $driver_file = "nvidia-driver.exe"
   $drivers = (New-Object System.Net.WebClient).DownloadString("https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=57&lid=1&whql=1&lang=en-us")
   $nvidia_version = $($drivers -match '<td class="gridItem">(\d\d\d\.\d\d)</td>' | Out-Null; $Matches[1])
@@ -82,11 +92,15 @@ function Install-NvidiaDriver {
 
   Write-Output "Installing..."
   Start-Process -FilePath "$extractFolder\setup.exe"  -ArgumentList "-s", "-noreboot", "-noeula" -Wait
+  
+  Write-Host -ForegroundColor Green "Done."
 }
 
 ################################################################################
 # Disabling Hyper-V Video
 function Disable-Devices {
+  Write-Host -ForegroundColor Cyan "Starting Disable-Devices function..."
+
   $url = "https://gallery.technet.microsoft.com/PowerShell-Device-60d73bb0/file/147248/2/DeviceManagement.zip"
   $compressed_file = "DeviceManagement.zip"
   $extract_folder = "DeviceManagement"
@@ -103,19 +117,27 @@ function Disable-Devices {
   Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
   Write-Output "Disabling Generic PnP Monitor"
   Get-Device | Where-Object -Property Name -Like "Generic PnP Monitor" | Where DeviceParent -like "*BasicDisplay*" | Disable-Device  -Confirm:$false
+  
+  Write-Host -ForegroundColor Green "Done."
 }
 
 ################################################################################
 # Disable TCC
 function Disable-TCC {
+  Write-Host -ForegroundColor Cyan "Starting Disable-TCC function..."
+
   $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
   $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
   & $nvsmi -g $gpu -fdm 0
+  
+  Write-Host -ForegroundColor Green "Done."
 }
 
 ################################################################################
 # Install-VirtualAudio
 function Install-VirtualAudio {
+  Write-Host -ForegroundColor Cyan "Starting Install-VirtualAudio function..."
+
   $compressed_file = "VBCABLE_Driver_Pack43.zip"
   $driver_folder = "VBCABLE_Driver_Pack43"
   $driver_inf = "vbMmeCable64_win7.inf"
@@ -142,11 +164,15 @@ function Install-VirtualAudio {
 
   Write-Output "Installing virtual audio driver"
   Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardward_id -Wait
+  
+  Write-Host -ForegroundColor Green "Done."
 }
 
 ################################################################################
 # Install Steam
 function Install-Steam {
+  Write-Host -ForegroundColor Cyan "Starting Install-Steam function..."
+
   $steam_exe = "steam.exe"
   Write-Output "Downloading steam into path $PSScriptRoot\$steam_exe"
   (New-Object System.Net.WebClient).DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
@@ -155,11 +181,15 @@ function Install-Steam {
 
   Write-Output "Cleaning up steam installation file"
   Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
+  
+  Write-Host -ForegroundColor Green "Done."
 }
 
 ################################################################################
 # Install Parsec
 function Install-Parsec {
+  Write-Host -ForegroundColor Cyan "Starting Install-Parsec function..."
+
   $parsec_exe = "parsec-windows.exe"
   Write-Output "Downloading Parsec into path $PSScriptRoot\$parsec_exe"
   (New-Object System.Net.WebClient).DownloadFile("https://s3.amazonaws.com/parsec-build/package/parsec-windows.exe", "$PSScriptRoot\$parsec_exe")
@@ -168,11 +198,15 @@ function Install-Parsec {
 
   Write-Output "Cleaning up Parsec installation file"
   Remove-Item -Path $PSScriptRoot\$parsec_exe -Confirm:$false
+  
+  Write-Host -ForegroundColor Green "Done."
 }
 
 ################################################################################
 # Install Epic Games Launcher
 function Install-EpicGameLauncher {
+  Write-Host -ForegroundColor Cyan "Starting Install-EpicGameLauncher function..."
+
   $epic_msi = "EpicGamesLauncherInstaller.msi"
   Write-Output "Downloading Epic Games Launcher into path $PSScriptRoot\$epic_msi"
   (New-Object System.Net.WebClient).DownloadFile("https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi", "$PSScriptRoot\$epic_msi")
@@ -181,4 +215,6 @@ function Install-EpicGameLauncher {
 
   Write-Output "Cleaning up Epic Games Launcher installation file"
   Remove-Item -Path $PSScriptRoot\$epic_msi -Confirm:$false
+  
+  Write-Host -ForegroundColor Green "Done."
 }
