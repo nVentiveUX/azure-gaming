@@ -186,7 +186,7 @@ az network lb create \
     --resource-group "${AZ_VM_RG}" \
     --public-ip-address "${AZ_LB}-public-ip" \
     --frontend-ip-name "${AZ_LB}-public-ip" \
-    --backend-pool-name "VMSSBackend" \
+    --backend-pool-name "${AZ_VM}-backendpool" \
     --sku "Basic" \
     --output none
 
