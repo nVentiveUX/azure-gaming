@@ -22,6 +22,7 @@ Import-Module "C:\$script_name"
 
 Registy-tweaks
 Install-7zip
+Install-VPN
 Install-NvidiaDriver
 
 Write-Host -ForegroundColor Yellow "Would you like to reboot now?"

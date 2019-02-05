@@ -174,6 +174,29 @@ function Install-VirtualAudio {
 }
 
 ################################################################################
+# Install ZeroTier VPN
+function Install-VPN {
+  Write-Host -ForegroundColor Cyan "Starting Install-VPN function..."
+
+  Write-Output "Disabling Teredo tunneling"
+  Set-Net6to4Configuration -State disabled
+  Set-NetTeredoConfiguration -Type disabled
+  Set-NetIsatapConfiguration -State disabled
+
+  Write-Output "Downloading ZeroTier"
+  (New-Object System.Net.WebClient).DownloadFile("https://download.zerotier.com/dist/ZeroTier%20One.msi", "$PSScriptRoot\zerotier.msi")
+
+  Write-Output "Importing ZeroTier certificate"
+  (New-Object System.Net.WebClient).DownloadFile("https://github.com/zerotier/ZeroTierOne/raw/master/ext/bin/tap-windows-ndis6/zttap300.cer", "$PSScriptRoot\zttap300.cer")
+  Import-Certificate -FilePath "$PSScriptRoot\zttap300.cer" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher" | Out-Null
+
+  Write-Output "Installing ZeroTier"
+  Start-Process -FilePath "$PSScriptRoot\zerotier.msi" -ArgumentList "/quiet" -Wait
+
+  Write-Host -ForegroundColor Green "Done."
+}
+
+################################################################################
 # Install Steam
 function Install-Steam {
   Write-Host -ForegroundColor Cyan "Starting Install-Steam function..."
