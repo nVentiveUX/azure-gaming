@@ -22,7 +22,7 @@ function Registy-tweaks {
   $Shortcut.TargetPath = "C:\Windows\System32\tscon.exe"
   $Shortcut.Arguments = "1 /dest:console"
   $Shortcut.Save()
-  
+
   Write-Output "Priority to programs, not background"
   Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" -Name "Win32PrioritySeparation" -Value 38
 
@@ -43,11 +43,11 @@ function Registy-tweaks {
   Set-ItemProperty "HKCU:\Control Panel\Accessibility\StickyKeys" "Flags" "506"
   Set-ItemProperty "HKCU:\Control Panel\Accessibility\Keyboard Response" "Flags" "122"
   Set-ItemProperty "HKCU:\Control Panel\Accessibility\ToggleKeys" "Flags" "58"
-  
+
   Write-Output "Do not combine taskbar buttons and no tray hiding stuff"
   Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
   Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name EnableAutoTray -Value 0
-  
+
   Write-Host -ForegroundColor Green "Done."
 }
 
@@ -60,12 +60,11 @@ function Install-7zip {
   $7Zip_exe = "7Zip.exe"
   Write-Output "Downloading 7zip into path $PSScriptRoot\$7Zip_exe"
   (New-Object System.Net.WebClient).DownloadFile("https://www.7-zip.org/a/7z1806-x64.exe", "$PSScriptRoot\$7Zip_exe")
+
   Write-Output "Installing 7Zip"
   Start-Process -FilePath "$PSScriptRoot\$7Zip_exe" -ArgumentList "/S" -Wait
-
-  Write-Output "Cleaning up 7zip installation file"
   Remove-Item -Path "$PSScriptRoot\$7Zip_exe" -Confirm:$false
-  
+
   Write-Host -ForegroundColor Green "Done."
 }
 
@@ -93,7 +92,7 @@ function Install-NvidiaDriver {
   Write-Output "Installing..."
   Start-Process -FilePath "$extractFolder\setup.exe"  -ArgumentList "-s", "-noreboot", "-noeula", "-clean" -Wait
 
-  Write-Output "Cleaning up installation files..."
+  Write-Output "Cleaning..."
   Remove-Item -Path "$PSScriptRoot\$driver_file" -Confirm:$false
   Remove-Item -Path "$extractFolder" -Confirm:$false
 
@@ -115,6 +114,7 @@ function Disable-Devices {
 
   Write-Output "Extracting Device Management Powershell Script"
   Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$extract_folder" -Force
+  Remove-Item -Path "$PSScriptRoot\$compressed_file" -Confirm:$false
 
   Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
   Write-Output "Disabling Microsoft Hyper-V Video"
@@ -138,7 +138,7 @@ function Disable-TCC {
   $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
   $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
   & $nvsmi -g $gpu -fdm 0
-  
+
   Write-Host -ForegroundColor Green "Done."
 }
 
@@ -159,6 +159,7 @@ function Install-VirtualAudio {
 
   Write-Output "Installing Windows Development Kit"
   Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
+  Remove-Item -Path "$PSScriptRoot\$compressed_file" -Confirm:$false
 
   Write-Output "Downloading Virtual Audio Driver"
   (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/$compressed_file", "$PSScriptRoot\$compressed_file")
@@ -166,6 +167,7 @@ function Install-VirtualAudio {
 
   Write-Output "Extracting Virtual Audio Driver"
   Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
+  Remove-Item -Path "$PSScriptRoot\$compressed_file" -Confirm:$false
 
   Write-Output "Importing vb certificate"
   (Get-AuthenticodeSignature -FilePath "$PSScriptRoot\$driver_folder\vbaudio_cable64_win7.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "$PSScriptRoot\$driver_folder\vbcable.cer" | Out-Null
@@ -173,7 +175,7 @@ function Install-VirtualAudio {
 
   Write-Output "Installing virtual audio driver"
   Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardward_id -Wait
-  
+
   Write-Host -ForegroundColor Green "Done."
 }
 
@@ -192,8 +194,6 @@ function Install-VPN {
 
   Write-Output "Installing ZeroTier"
   Start-Process -FilePath "$PSScriptRoot\zerotier.msi" -ArgumentList "/quiet" -Wait
-
-  Write-Output "Cleaning up ZeroTier installation file"
   Remove-Item -Path "$PSScriptRoot\zerotier.msi" -Confirm:$false
 
   Write-Host -ForegroundColor Green "Done."
@@ -209,10 +209,8 @@ function Install-Steam {
   (New-Object System.Net.WebClient).DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
   Write-Output "Installing steam"
   Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
-
-  Write-Output "Cleaning up steam installation file"
   Remove-Item -Path "$PSScriptRoot\$steam_exe" -Confirm:$false
-  
+
   Write-Host -ForegroundColor Green "Done."
 }
 
@@ -226,10 +224,8 @@ function Install-Parsec {
   (New-Object System.Net.WebClient).DownloadFile("https://s3.amazonaws.com/parsec-build/package/parsec-windows.exe", "$PSScriptRoot\$parsec_exe")
   Write-Output "Installing Parsec"
   Start-Process -FilePath "$PSScriptRoot\$parsec_exe" -ArgumentList "/S" -Wait
-
-  Write-Output "Cleaning up Parsec installation file"
   Remove-Item -Path "$PSScriptRoot\$parsec_exe" -Confirm:$false
-  
+
   Write-Host -ForegroundColor Green "Done."
 }
 
@@ -243,9 +239,7 @@ function Install-EpicGameLauncher {
   (New-Object System.Net.WebClient).DownloadFile("https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi", "$PSScriptRoot\$epic_msi")
   Write-Output "Installing Epic Games Launcher"
   Start-Process -FilePath "$PSScriptRoot\$epic_msi" -ArgumentList "/quiet" -Wait
-
-  Write-Output "Cleaning up Epic Games Launcher installation file"
   Remove-Item -Path "$PSScriptRoot\$epic_msi" -Confirm:$false
-  
+
   Write-Host -ForegroundColor Green "Done."
 }
