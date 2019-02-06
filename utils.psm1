@@ -11,7 +11,7 @@ function Registy-tweaks {
   Write-Output "Make the admin login at startup."
   $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
   Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
-  Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
+  Set-ItemProperty $registry "DefaultDomainName" -Value ([System.Net.Dns]::GetHostName()) -type String
   Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
   Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
 
