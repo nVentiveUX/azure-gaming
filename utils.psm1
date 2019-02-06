@@ -64,7 +64,7 @@ function Install-7zip {
   Start-Process -FilePath "$PSScriptRoot\$7Zip_exe" -ArgumentList "/S" -Wait
 
   Write-Output "Cleaning up 7zip installation file"
-  Remove-Item -Path $PSScriptRoot\$7Zip_exe -Confirm:$false
+  Remove-Item -Path "$PSScriptRoot\$7Zip_exe" -Confirm:$false
   
   Write-Host -ForegroundColor Green "Done."
 }
@@ -92,7 +92,11 @@ function Install-NvidiaDriver {
 
   Write-Output "Installing..."
   Start-Process -FilePath "$extractFolder\setup.exe"  -ArgumentList "-s", "-noreboot", "-noeula", "-clean" -Wait
-  
+
+  Write-Output "Cleaning up installation files..."
+  Remove-Item -Path "$PSScriptRoot\$driver_file" -Confirm:$false
+  Remove-Item -Path "$extractFolder" -Confirm:$false
+
   Write-Host -ForegroundColor Green "Done."
 }
 
@@ -189,6 +193,9 @@ function Install-VPN {
   Write-Output "Installing ZeroTier"
   Start-Process -FilePath "$PSScriptRoot\zerotier.msi" -ArgumentList "/quiet" -Wait
 
+  Write-Output "Cleaning up ZeroTier installation file"
+  Remove-Item -Path "$PSScriptRoot\zerotier.msi" -Confirm:$false
+
   Write-Host -ForegroundColor Green "Done."
 }
 
@@ -204,7 +211,7 @@ function Install-Steam {
   Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
 
   Write-Output "Cleaning up steam installation file"
-  Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
+  Remove-Item -Path "$PSScriptRoot\$steam_exe" -Confirm:$false
   
   Write-Host -ForegroundColor Green "Done."
 }
@@ -221,7 +228,7 @@ function Install-Parsec {
   Start-Process -FilePath "$PSScriptRoot\$parsec_exe" -ArgumentList "/S" -Wait
 
   Write-Output "Cleaning up Parsec installation file"
-  Remove-Item -Path $PSScriptRoot\$parsec_exe -Confirm:$false
+  Remove-Item -Path "$PSScriptRoot\$parsec_exe" -Confirm:$false
   
   Write-Host -ForegroundColor Green "Done."
 }
@@ -238,7 +245,7 @@ function Install-EpicGameLauncher {
   Start-Process -FilePath "$PSScriptRoot\$epic_msi" -ArgumentList "/quiet" -Wait
 
   Write-Output "Cleaning up Epic Games Launcher installation file"
-  Remove-Item -Path $PSScriptRoot\$epic_msi -Confirm:$false
+  Remove-Item -Path "$PSScriptRoot\$epic_msi" -Confirm:$false
   
   Write-Host -ForegroundColor Green "Done."
 }
