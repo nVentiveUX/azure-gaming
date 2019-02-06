@@ -186,11 +186,6 @@ function Install-VPN {
   Write-Output "Downloading ZeroTier"
   (New-Object System.Net.WebClient).DownloadFile("https://download.zerotier.com/dist/ZeroTier%20One.msi", "$PSScriptRoot\zerotier.msi")
 
-  Write-Output "Importing ZeroTier certificate"
-  (New-Object System.Net.WebClient).DownloadFile("https://github.com/zerotier/ZeroTierOne/raw/master/ext/bin/tap-windows-ndis6/x64/zttap300.cat", "$PSScriptRoot\zttap300.cat")
-  (Get-AuthenticodeSignature -FilePath "$PSScriptRoot\zttap300.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "$PSScriptRoot\zttap300.cer" | Out-Null
-  Import-Certificate -FilePath "$PSScriptRoot\zttap300.cer" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher" | Out-Null
-
   Write-Output "Installing ZeroTier"
   Start-Process -FilePath "$PSScriptRoot\zerotier.msi" -ArgumentList "/quiet" -Wait
 
