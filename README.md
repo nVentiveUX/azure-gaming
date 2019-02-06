@@ -117,10 +117,12 @@ On you local machine
   * [x] Enable Broadcast (ff:ff:ff:ff:ff:ff)
   * [x] Auto-Assign from Range (_IPv4 Auto-Assign_)
   * [ ] All IPv6 stuff
-* Install the client [ZeroTier One](https://download.zerotier.com/dist/ZeroTier%20One.msi) and Sign In
+* Install the client [ZeroTier One](https://download.zerotier.com/dist/ZeroTier%20One.msi), Sign In and  **Join the Network**
+* Tick Preferences.../**Launch ZeroTier On StartUp** from the minimized icon into the task bar
 
 On the VM
-* Open ZeroTier One and Sign In
+* Open ZeroTier One, Sign In and **Join the Network**
+* Tick Preferences.../**Launch ZeroTier On StartUp** from the minimized icon into the task bar
 
 ### Configure Steam In-Home streaming
 
