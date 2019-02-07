@@ -39,6 +39,8 @@ Installed software:
 
 **This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! This a personal project and is NOT endorsed by Microsoft. If you encounter an issue, please submit it on GitHub.
 
+A workaround could be to press ALT+ENTER to switch from fullscreen to window mode, and then return to the Desktop.
+
 ## Known issue
 
 The only issue so far is about Steam In-Home streaming. Due to a bug, you cannot return to the Windows Desktop during your game session using ALT+TAB.
