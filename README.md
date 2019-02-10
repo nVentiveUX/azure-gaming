@@ -14,21 +14,20 @@ Table of contents
 This project automates the set-up process for cloud gaming on a Nvidia Tesla M60 GPU on Azure Standard NV6 VM.
 The development of this project is heavily inspired by this [excellent guide](https://link.medium.com/wXD4ZJWb5T).
 
-Cloud gaming technology:
+* Cloud gaming technology used
+  * [x] [Parsec](https://parsecgaming.com/)
+  * [x] [Steam In-Home streaming](https://support.steampowered.com/kb_cat.php?id=112) using [ZeroTier](https://www.zerotier.com/) VPN
+  * [ ] [NVIDIA GameStream](https://support-shield.nvidia.com/gamestream-user-guide) using [Moonlight](https://moonlight-stream.org/)
 
-* [Parsec](https://parsecgaming.com/)
-* [Steam In-Home streaming](https://support.steampowered.com/kb_cat.php?id=112) using [ZeroTier](https://www.zerotier.com/) VPN
-
-Installed software:
-
-* Game launchers
+* Game launcher installed
   * [ ] Battle.net (soon)
   * [x] Epic Games Launcher
   * [ ] GOG Galaxy (soon)
   * [ ] Origin (soon)
   * [x] Steam
   * [ ] UPlay (soon)
-* Software
+
+* Software installed
   * [x] [7zip](https://www.7-zip.org/)
   * [x] [Nvidia Tesla](https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=57&lid=1&whql=1&lang=en-us) drivers for Windows 10
   * [x] [Parsec](https://parsecgaming.com/) for game streaming
@@ -39,18 +38,18 @@ Installed software:
 
 **This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! This a personal project and is NOT endorsed by Microsoft. If you encounter an issue, please submit it on GitHub.
 
-A workaround could be to press ALT+ENTER to switch from fullscreen to window mode, and then return to the Desktop.
-
 ## Known issue
 
 The only issue so far is about Steam In-Home streaming. Due to a bug, you cannot return to the Windows Desktop during your game session using ALT+TAB.
+
+A workaround could be to press ALT+ENTER to switch from fullscreen to window mode, and then return to the Desktop.
 
 ## Usage
 
 ### Create the infrastructure in Azure
 
 * The only requirement is to have AZ CLI installed. You can use the [Azure Cloud Shell](https://shell.azure.com/)
-* Do not forget to update the options values of the script ```create_vmss.sh```
+* Do not forget to update the options values of the below example.
 * At the end, you will be prompted to choose your Windows **admin password**
 
 ```bash
@@ -74,15 +73,6 @@ cd ~/azure-gaming
 ### Configure the Virtual Machine
 
 * Connect using RDP. *Click on the Windows key in the bottom-left corner, type "mstsc", and open on the app.*
-* From powershell admin prompt, disable UAC and reboot.
-
-```ps
-New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name EnableLUA -PropertyType DWord -Value 1 -Force
-New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name ConsentPromptBehaviorAdmin -PropertyType DWord -Value 0 -Force
-New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name PromptOnSecureDesktop -PropertyType DWord -Value 0 -Force
-Write-host -ForegroundColor Yellow "Rebooting now..."; Start-Sleep -s 2; Restart-Computer
-```
-
 * From powershell admin prompt, run the 1st script
 
 ```ps

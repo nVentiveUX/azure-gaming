@@ -48,9 +48,24 @@ function Registy-tweaks {
   Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
   Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name EnableAutoTray -Value 0
 
+  Write-Output "Disable UAC"
+  New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name EnableLUA -PropertyType DWord -Value 1 -Force | Out-Null
+  New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name ConsentPromptBehaviorAdmin -PropertyType DWord -Value 0 -Force | Out-Null
+  New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name PromptOnSecureDesktop -PropertyType DWord -Value 0 -Force | Out-Null
+
   Write-Host -ForegroundColor Green "Done."
 }
 
+################################################################################
+# Install Local Experience Packs: fr-fr
+function Install-LanguageExperiencePackfr {
+  Write-Host -ForegroundColor Cyan "Starting Install-LanguageExperiencePackfr function..."
+
+  $ManifestPath = (Get-AppxPackage Microsoft.LanguageExperiencePackfr-fr).InstallLocation + "\Appxmanifest.xml"
+  Add-AppxPackage -Path $ManifestPath -Register -DisableDevelopmentMode
+
+  Write-Host -ForegroundColor Green "Done."
+}
 
 ################################################################################
 # Install 7zip

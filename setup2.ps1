@@ -11,6 +11,7 @@ Import-Module "C:\$script_name"
 
 Disable-Devices
 Disable-TCC
+Install-VPN
 Install-VirtualAudio
 Install-Steam
 Install-EpicGameLauncher
