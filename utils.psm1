@@ -170,7 +170,7 @@ function Install-VirtualAudio {
 
   Write-Output "Installing Windows Development Kit"
   Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
-  Remove-Item -Path "$PSScriptRoot\$compressed_file" -Confirm:$false
+  Remove-Item -Path "$PSScriptRoot\$wdk_installer" -Confirm:$false
 
   Write-Output "Downloading Virtual Audio Driver"
   (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/$compressed_file", "$PSScriptRoot\$compressed_file")

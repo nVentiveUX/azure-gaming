@@ -165,3 +165,14 @@ Windows-10  MicrosoftWindowsDesktop  rs5-evd   MicrosoftWindowsDesktop:Windows-1
 Windows-10  MicrosoftWindowsDesktop  rs5-pro   MicrosoftWindowsDesktop:Windows-10:rs5-pro:17763.253.65   17763.253.65
 Windows-10  MicrosoftWindowsDesktop  rs5-pron  MicrosoftWindowsDesktop:Windows-10:rs5-pron:17763.253.67  17763.253.67
 ```
+
+## In progress
+
+* Download and install the latest [NVIDIA Capture SDK](https://developer.nvidia.com/capture-sdk) (formerly GRID SDK)
+* From powershell admin prompt, run the 1st script
+
+```ps
+& "C:\Program Files (x86)\NVIDIA Corporation\NVIDIA Capture SDK\bin\NvFBCEnable.exe" -enable -noreset
+```
+
+* Reboot
