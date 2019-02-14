@@ -89,20 +89,16 @@ function Install-NvidiaDriver {
   Write-Host -ForegroundColor Cyan "Starting Install-NvidiaDriver function..."
 
   $driver_file = "nvidia-driver.exe"
-  $drivers = (New-Object System.Net.WebClient).DownloadString("https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=57&lid=1&whql=1&lang=en-us")
-  $nvidia_version = $($drivers -match '<td class="gridItem">(\d\d\d\.\d\d)</td>' | Out-Null; $Matches[1])
-  # $url = "http://international.download.nvidia.com/Windows/Quadro_Certified/$nvidia_version/$nvidia_version-quadro-grid-desktop-notebook-win10-64bit-international-whql.exe"
-  $url = "http://international.download.nvidia.com/Windows/Quadro_Certified/$nvidia_version/$nvidia_version-tesla-desktop-win10-64bit-international.exe"
+  $url = "https://go.microsoft.com/fwlink/?linkid=874181"
 
   Write-Output "Installing Nvidia Driver $nvidia_version"
   Write-Output "Downloading..."
   (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$driver_file")
 
   Write-Output "Extracting..."
-  $extractFolder = "C:\NVIDIA\DisplayDriver\$nvidia_version\Win10_64\International"
-  $filesToExtract = "Display.Driver NGXCore NVI2 PhysX NVWMI PPC EULA.txt ListDevices.txt setup.cfg setup.exe"
+  $extractFolder = "C:\NVIDIA"
+  $filesToExtract = "Display.Driver NGXCore NVI2 NVWMI EULA.txt license.txt setup.cfg setup.exe"
   Start-Process -FilePath "$env:programfiles\7-zip\7z.exe" -ArgumentList "x $PSScriptRoot\$driver_file $filesToExtract -o""$extractFolder""" -wait
-  (Get-Content "$extractFolder\setup.cfg") | Where-Object {$_ -notmatch 'name="\${{(EulaHtmlFile|FunctionalConsentFile|PrivacyPolicyFile)}}'} | Set-Content "$extractFolder\setup.cfg" -Encoding UTF8 -Force
 
   Write-Output "Installing..."
   Start-Process -FilePath "$extractFolder\setup.exe"  -ArgumentList "-s", "-noreboot", "-noeula", "-clean" -Wait
