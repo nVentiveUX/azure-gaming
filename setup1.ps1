@@ -21,7 +21,6 @@ Get-UtilsScript $script_name
 Import-Module "C:\$script_name"
 
 Registy-tweaks
-Install-LanguageExperiencePackfr
 Install-7zip
 Install-NvidiaDriver
 
