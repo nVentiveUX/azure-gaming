@@ -17,7 +17,7 @@ $script_name = "utils.psm1"
 Get-UtilsScript $script_name
 Import-Module "$PSScriptRoot\$script_name"
 
-Disable-Devices
+Manage-Display-Adapters
 Disable-TCC
 Install-VPN
 Install-VirtualAudio

@@ -111,9 +111,9 @@ function Install-NvidiaDriver {
 }
 
 ################################################################################
-# Disabling Hyper-V Video
-function Disable-Devices {
-  Write-Host -ForegroundColor Cyan "Starting Disable-Devices function..."
+# Manage Display Adapters
+function Manage-Display-Adapters {
+  Write-Host -ForegroundColor Cyan "Starting Manage-Display-Adapters function..."
 
   $url = "https://gallery.technet.microsoft.com/PowerShell-Device-60d73bb0/file/147248/2/DeviceManagement.zip"
   $compressed_file = "DeviceManagement.zip"
@@ -137,6 +137,11 @@ function Disable-Devices {
   takeown /f C:\Windows\System32\Drivers\BasicDisplay.sys
   icacls C:\Windows\System32\Drivers\BasicDisplay.sys /grant "$env:username`:F"
   move C:\Windows\System32\Drivers\BasicDisplay.sys C:\Windows\System32\Drivers\BasicDisplay.old
+
+  Write-Output "Enabling NvFBC..."
+  (New-Object System.Net.WebClient).DownloadFile("https://github.com/nVentiveUX/azure-gaming/raw/master/NvFBCEnable.zip", "$PSScriptRoot\NvFBCEnable.zip")
+  Expand-Archive -LiteralPath "$PSScriptRoot\NvFBCEnable.zip" -DestinationPath "$PSScriptRoot"
+  & "$PSScriptRoot\NvFBCEnable.exe" -enable -noreset
 
   Write-Host -ForegroundColor Green "Done."
 }
