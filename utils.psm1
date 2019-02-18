@@ -16,9 +16,10 @@ function Registy-tweaks {
   Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
 
   # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
-  Write-Output "Create disconnect shortcut under [Environment]::GetFolderPath('Desktop')\disconnect.lnk"
+  $desktop_folder = [Environment]::GetFolderPath("Desktop")
+  Write-Output "Create disconnect shortcut under $desktop_folder\disconnect.lnk"
   $WshShell = New-Object -comObject WScript.Shell
-  $Shortcut = $WshShell.CreateShortcut("[Environment]::GetFolderPath('Desktop')\disconnect.lnk")
+  $Shortcut = $WshShell.CreateShortcut("$desktop_folder\disconnect.lnk")
   $Shortcut.TargetPath = "C:\Windows\System32\tscon.exe"
   $Shortcut.Arguments = "1 /dest:console"
   $Shortcut.Save()
@@ -105,7 +106,7 @@ function Install-NvidiaDriver {
 
   Write-Output "Cleaning..."
   Remove-Item -Path "$PSScriptRoot\$driver_file" -Confirm:$false
-  Remove-Item -Path "$extractFolder" -Confirm:$false
+  Remove-Item -Path "$extractFolder" -Recurse -Confirm:$false
 
   Write-Host -ForegroundColor Green "Done."
 }

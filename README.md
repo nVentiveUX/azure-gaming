@@ -53,6 +53,7 @@ A workaround could be to press ALT+ENTER to switch from fullscreen to window mod
 * At the end, you will be prompted to choose your Windows **admin password**
 
 ```bash
+(
 rm -rf ~/azure-gaming
 git clone https://github.com/nVentiveUX/azure-gaming.git
 cd ~/azure-gaming
@@ -67,7 +68,9 @@ cd ~/azure-gaming
     --subnet="10.1.0.16/28" \
     --rg-vm="rg-inf-gaming-001" \
     --vm-name="vm-gaming-001" \
-    --lb-name="lb-gaming-001"
+    --lb-name="lb-gaming-001" \
+    --dns-name="yvesgaming-001"
+)
 ```
 
 ### Configure the Virtual Machine
@@ -87,6 +90,7 @@ powershell -ExecutionPolicy Unrestricted -File "$path\setup1.ps1"
 * From powershell admin prompt run the 2nd script
 
 ```ps
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $path = "C:\azure"
 New-Item -ItemType Directory -Force -Path $path | Out-Null
 (New-Object System.Net.WebClient).DownloadFile("https://github.com/nVentiveUX/azure-gaming/raw/master/setup2.ps1", "$path\setup2.ps1")
