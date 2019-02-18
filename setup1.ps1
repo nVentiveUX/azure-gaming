@@ -13,12 +13,12 @@ function Get-UtilsScript ($script_name) {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $url = "https://github.com/nVentiveUX/azure-gaming/raw/master/$script_name"
     Write-Output "Downloading utils script from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
+    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$script_name")
 }
 
 $script_name = "utils.psm1"
 Get-UtilsScript $script_name
-Import-Module "C:\$script_name"
+Import-Module "$PSScriptRoot\$script_name"
 
 Registy-tweaks
 Install-7zip

@@ -77,17 +77,20 @@ cd ~/azure-gaming
 
 ```ps
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-(New-Object System.Net.WebClient).DownloadFile("https://github.com/nVentiveUX/azure-gaming/raw/master/setup1.ps1", "C:\setup1.ps1")
-powershell -ExecutionPolicy Unrestricted -File "C:\setup1.ps1"
+$path = "C:\azure"
+New-Item -ItemType Directory -Force -Path $path | Out-Null
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/nVentiveUX/azure-gaming/raw/master/setup1.ps1", "$path\setup1.ps1")
+powershell -ExecutionPolicy Unrestricted -File "$path\setup1.ps1"
 ```
 
 * Reboot
 * From powershell admin prompt run the 2nd script
 
 ```ps
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-(New-Object System.Net.WebClient).DownloadFile("https://github.com/nVentiveUX/azure-gaming/raw/master/setup2.ps1", "C:\setup2.ps1")
-powershell -ExecutionPolicy Unrestricted -File "C:\setup2.ps1"
+$path = "C:\azure"
+New-Item -ItemType Directory -Force -Path $path | Out-Null
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/nVentiveUX/azure-gaming/raw/master/setup2.ps1", "$path\setup2.ps1")
+powershell -ExecutionPolicy Unrestricted -File "$path\setup2.ps1"
 ```
 
 ### Configure Parsec
@@ -98,7 +101,7 @@ On you local machine
 
 On the VM
 * Sign In to Parsec using the same account and **Enable Hosting**
-* Close the remote desktop connection using the shortcut ```C:\disconnect.lnk```
+* Close the remote desktop connection using the shortcut ```disconnect.lnk``` on the **Desktop**.
 * Try to connect into the VM thought your local installation of Parsec
 * On the VM, tick **Run when my computer starts** from the minimized icon into the task bar
 * Reboot the VM... and you're done.

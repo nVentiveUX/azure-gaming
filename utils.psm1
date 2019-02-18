@@ -16,9 +16,9 @@ function Registy-tweaks {
   Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
 
   # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
-  Write-Output "Create disconnect shortcut under C:\disconnect.lnk"
+  Write-Output "Create disconnect shortcut under [Environment]::GetFolderPath('Desktop')\disconnect.lnk"
   $WshShell = New-Object -comObject WScript.Shell
-  $Shortcut = $WshShell.CreateShortcut("C:\disconnect.lnk")
+  $Shortcut = $WshShell.CreateShortcut("[Environment]::GetFolderPath('Desktop')\disconnect.lnk")
   $Shortcut.TargetPath = "C:\Windows\System32\tscon.exe"
   $Shortcut.Arguments = "1 /dest:console"
   $Shortcut.Save()
@@ -96,7 +96,7 @@ function Install-NvidiaDriver {
   (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$driver_file")
 
   Write-Output "Extracting..."
-  $extractFolder = "C:\NVIDIA"
+  $extractFolder = "$PSScriptRoot\NVIDIA"
   $filesToExtract = "Display.Driver NGXCore NVI2 NVWMI EULA.txt license.txt setup.cfg setup.exe"
   Start-Process -FilePath "$env:programfiles\7-zip\7z.exe" -ArgumentList "x $PSScriptRoot\$driver_file $filesToExtract -o""$extractFolder""" -wait
 
