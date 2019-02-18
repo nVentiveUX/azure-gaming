@@ -223,7 +223,7 @@ function Install-Steam {
 
   $steam_exe = "steam.exe"
   Write-Output "Downloading steam into path $PSScriptRoot\$steam_exe"
-  (New-Object System.Net.WebClient).DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
+  (New-Object System.Net.WebClient).DownloadFile("http://media.steampowered.com/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
   Write-Output "Installing steam"
   Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
   Remove-Item -Path "$PSScriptRoot\$steam_exe" -Confirm:$false
