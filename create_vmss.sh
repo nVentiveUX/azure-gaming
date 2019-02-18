@@ -6,8 +6,8 @@ PROGNAME="$(basename "$0")"
 
 # Parse arguments
 ARGS=$(getopt \
-    --options s:l:g:v:s:n:r:m:b \
-    --longoptions subscription:,location:,rg-vnet:,vnet-name:,subnet-name:,subnet:,rg-vm:,vm-name:,lb-name: \
+    --options s:l:g:v:s:n:r:m:b:d \
+    --longoptions subscription:,location:,rg-vnet:,vnet-name:,subnet-name:,subnet:,rg-vm:,vm-name:,lb-name:,dns-name: \
     -n "${PROGNAME}" -- "$@")
 eval set -- "${ARGS}"
 unset ARGS
@@ -21,6 +21,7 @@ AZ_VNET_SUBNET=""
 AZ_VM_RG=""
 AZ_VM=""
 AZ_LB=""
+AZ_LB_DNS=""
 
 while true; do
   case "$1" in
@@ -69,6 +70,11 @@ while true; do
         shift 2
         continue
     ;;
+    '-d'|'--dns-name')
+        AZ_LB_DNS="$2"
+        shift 2
+        continue
+    ;;
     '--')
         shift
         break
@@ -82,7 +88,7 @@ done
 
 # Show usage
 usage() {
-    printf "usage: %s --subscription=<name> --location=<name> --rg-vnet=<name> --vnet-name=<name> --subnet-name=<name> --subnet=<name> --rg-vm=<name> --vm-name=<name> --lb-name=<name>\\n" "${PROGNAME}"
+    printf "usage: %s --subscription=<name> --location=<name> --rg-vnet=<name> --vnet-name=<name> --subnet-name=<name> --subnet=<name> --rg-vm=<name> --vm-name=<name> --lb-name=<name> --dns-name=<name>\\n" "${PROGNAME}"
 }
 
 # Pre-checks
@@ -140,6 +146,12 @@ if [[ -z $AZ_LB ]]; then
     exit 1
 fi
 
+if [[ -z $AZ_LB_DNS ]]; then
+    echo "Error: --dns-name is required !"
+    usage
+    exit 1
+fi
+
 printf "Switch to ${AZ_SUBSCRIPTION_ID} subscription...\\n"
 az account set --subscription "${AZ_SUBSCRIPTION_ID}" --output none
 
@@ -170,14 +182,14 @@ az group create \
     --name "${AZ_VM_RG}" \
     --output none
 
-printf "Create ${AZ_LB}.${AZ_LOCATION}.cloudapp.azure.com basic public IP address...\\n"
+printf "Create ${AZ_LB_DNS}.${AZ_LOCATION}.cloudapp.azure.com basic public IP address...\\n"
 az network public-ip create \
     --name "${AZ_LB}-public-ip" \
     --resource-group "${AZ_VM_RG}" \
     --allocation-method "dynamic" \
     --sku "Basic" \
     --version "IPv4" \
-    --dns-name "${AZ_LB}" \
+    --dns-name "${AZ_LB_DNS}" \
     --output none
 
 printf "Create ${AZ_LB} basic load balancer...\\n"
