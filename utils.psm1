@@ -5,33 +5,33 @@
 function Registy-tweaks {
   Write-Host -ForegroundColor Cyan "Starting Registy-tweaks function..."
 
-  Write-Output "Make the password and account of admin user never expire."
+  Write-Output "Make the password and account of admin user never expire..."
   Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
 
-  Write-Output "Make the admin login at startup."
+  Write-Output "Make the admin login at startup..."
   $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-  Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
-  Set-ItemProperty $registry "DefaultDomainName" -Value ([System.Net.Dns]::GetHostName()) -type String
-  Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
-  Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
+  Set-ItemProperty -Path $registry -Name "AutoAdminLogon" -Value "1" -type String
+  Set-ItemProperty -Path $registry -Name "DefaultDomainName" -Value ([System.Net.Dns]::GetHostName()) -type String
+  Set-ItemProperty -Path $registry -Name "DefaultUsername" -Value $admin_username -type String
+  Set-ItemProperty -Path $registry -Name "DefaultPassword" -Value $admin_password -type String
 
   # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
   $desktop_folder = [Environment]::GetFolderPath("Desktop")
-  Write-Output "Create disconnect shortcut under $desktop_folder\disconnect.lnk"
+  Write-Output "Create disconnect shortcut under $desktop_folder\disconnect.lnk..."
   $WshShell = New-Object -comObject WScript.Shell
   $Shortcut = $WshShell.CreateShortcut("$desktop_folder\disconnect.lnk")
   $Shortcut.TargetPath = "C:\Windows\System32\tscon.exe"
   $Shortcut.Arguments = "1 /dest:console"
   $Shortcut.Save()
 
-  Write-Output "Priority to programs, not background"
-  Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" -Name "Win32PrioritySeparation" -Value 38
+  Write-Output "Priority to programs, not background..."
+  Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" -Name "Win32PrioritySeparation" -Type DWord -Value 38
 
-  Write-Output "Explorer set to performance"
-  Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
+  Write-Output "Explorer set to performance..."
+  Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Type DWord -Value 2
 
-  Write-Output "Disable crash dump"
-  Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl" -Name "CrashDumpEnabled" -Value 0
+  Write-Output "Disable crash dump..."
+  Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl" -Name "CrashDumpEnabled" -Type DWord -Value 0
 
   Write-Output "Show file extensions, hidden items and disable item checkboxes"
   $registry = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
