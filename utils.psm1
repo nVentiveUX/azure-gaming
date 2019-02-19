@@ -94,12 +94,14 @@ function Registy-tweaks {
 }
 
 ################################################################################
-# Install Local Experience Packs: fr-fr
-function Install-LanguageExperiencePackfr {
-  Write-Host -ForegroundColor Cyan "Starting Install-LanguageExperiencePackfr function..."
+# Install Local Experience Packs
+function Install-LanguageExperiencePack {
+  Write-Host -ForegroundColor Cyan "Starting Install-LanguageExperiencePack function..."
 
-  $ManifestPath = (Get-AppxPackage Microsoft.LanguageExperiencePackfr-fr).InstallLocation + "\Appxmanifest.xml"
-  Add-AppxPackage -Path $ManifestPath -Register -DisableDevelopmentMode
+  Write-Output "Adding secondary fr-FR keyboard..."
+  $langs = Get-WinUserLanguageList
+  $langs.Add("fr-FR")
+  Set-WinUserLanguageList $langs -Force
 
   Write-Host -ForegroundColor Green "Done."
 }

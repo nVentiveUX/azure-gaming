@@ -21,6 +21,7 @@ Manage-Display-Adapters
 Disable-TCC
 Install-VPN
 Install-VirtualAudio
+Install-LanguageExperiencePack
 Install-Steam
 Install-EpicGameLauncher
 Install-Parsec
