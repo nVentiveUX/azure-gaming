@@ -33,6 +33,12 @@ function Registy-tweaks {
   Write-Output "Disable crash dump..."
   Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl" -Name "CrashDumpEnabled" -Type DWord -Value 0
 
+  Write-Output "Showing all tray icons..."
+  If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
+    New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" | Out-Null
+  }
+  Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoAutoTrayNotify" -Type DWord -Value 1
+
   $registry = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
   Write-Output "Showing known file extensions..."
   Set-ItemProperty -Path $registry -Name "HideFileExt" -Type DWord -Value 0
