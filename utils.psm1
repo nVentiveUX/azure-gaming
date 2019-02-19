@@ -33,26 +33,62 @@ function Registy-tweaks {
   Write-Output "Disable crash dump..."
   Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl" -Name "CrashDumpEnabled" -Type DWord -Value 0
 
-  Write-Output "Show file extensions, hidden items and disable item checkboxes"
   $registry = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
-  Set-ItemProperty $registry HideFileExt 0
-  Set-ItemProperty $registry HideDrivesWithNoMedia 0
-  Set-ItemProperty $registry Hidden 1
-  Set-ItemProperty $registry AutoCheckSelect 0
+  Write-Output "Showing known file extensions..."
+  Set-ItemProperty -Path $registry -Name "HideFileExt" -Type DWord -Value 0
+  Write-Output "Showing hidden files..."
+  Set-ItemProperty -Path $registry -Name "Hidden" -Type DWord -Value 1
+  Write-Output "Hiding item selection checkboxes..."
+  Set-ItemProperty -Path $registry -Name "AutoCheckSelect" -Type DWord -Value 0
+  Write-Output "Enabling navigation pane expanding to current folder..."
+  Set-ItemProperty -Path $registry -Name "NavPaneExpandToCurrentFolder" -Type DWord -Value 1
+  Write-Output "Changing default Explorer view to This PC..."
+  Set-ItemProperty -Path $registry -Name "LaunchTo" -Type DWord -Value 1
+  Write-Output "Setting taskbar buttons to combine when taskbar is full..."
+  Set-ItemProperty -Path $registry -Name "TaskbarGlomLevel" -Type DWord -Value 1
+  Set-ItemProperty -Path $registry -Name "MMTaskbarGlomLevel" -Type DWord -Value 1
 
-  Write-Output "Weird accessibility stuff"
-  Set-ItemProperty "HKCU:\Control Panel\Accessibility\StickyKeys" "Flags" "506"
-  Set-ItemProperty "HKCU:\Control Panel\Accessibility\Keyboard Response" "Flags" "122"
-  Set-ItemProperty "HKCU:\Control Panel\Accessibility\ToggleKeys" "Flags" "58"
+  Write-Output "Disabling Sticky keys prompt..."
+  Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\StickyKeys" -Name "Flags" -Type String -Value "506"
 
-  Write-Output "Do not combine taskbar buttons and no tray hiding stuff"
-  Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
-  Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name EnableAutoTray -Value 0
+  Write-Output "Lowering UAC level..."
+  Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 0
+  Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 0
 
-  Write-Output "Disable UAC"
-  New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name EnableLUA -PropertyType DWord -Value 1 -Force | Out-Null
-  New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name ConsentPromptBehaviorAdmin -PropertyType DWord -Value 0 -Force | Out-Null
-  New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system" -Name PromptOnSecureDesktop -PropertyType DWord -Value 0 -Force | Out-Null
+  Write-Output "Installing .NET Framework 2.0, 3.0 and 3.5 runtimes..."
+  If ((Get-CimInstance -Class "Win32_OperatingSystem").ProductType -eq 1) {
+    Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart -WarningAction SilentlyContinue | Out-Null
+  } Else {
+    Install-WindowsFeature -Name "NET-Framework-Core" -WarningAction SilentlyContinue | Out-Null
+  }
+
+  Write-Output "Unpinning all Start Menu tiles..."
+  If ([System.Environment]::OSVersion.Version.Build -ge 15063 -And [System.Environment]::OSVersion.Version.Build -le 16299) {
+    Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount" -Include "*.group" -Recurse | ForEach-Object {
+      $data = (Get-ItemProperty -Path "$($_.PsPath)\Current" -Name "Data").Data -Join ","
+      $data = $data.Substring(0, $data.IndexOf(",0,202,30") + 9) + ",0,202,80,0,0"
+      Set-ItemProperty -Path "$($_.PsPath)\Current" -Name "Data" -Type Binary -Value $data.Split(",")
+    }
+  } ElseIf ([System.Environment]::OSVersion.Version.Build -ge 17134) {
+    $key = Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount\*start.tilegrid`$windows.data.curatedtilecollection.tilecollection\Current"
+    $data = $key.Data[0..25] + ([byte[]](202,50,0,226,44,1,1,0,0))
+    Set-ItemProperty -Path $key.PSPath -Name "Data" -Type Binary -Value $data
+    Stop-Process -Name "ShellExperienceHost" -Force -ErrorAction SilentlyContinue
+  }
+
+  Write-Output "Disabling Lock screen..."
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization")) {
+      New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization" | Out-Null
+    }
+  Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization" -Name "NoLockScreen" -Type DWord -Value 1
+
+  Write-Output "Disabling Location Tracking..."
+  If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location")) {
+    New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Force | Out-Null
+  }
+  Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Type String -Value "Deny"
+  Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -Type DWord -Value 0
+  Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "Status" -Type DWord -Value 0
 
   Write-Host -ForegroundColor Green "Done."
 }
