@@ -255,4 +255,4 @@ az vmss create \
     --lb-nat-pool-name "${AZ_VM}-natpool" \
     --output none
 printf "Done.\\n\\n"
-printf "Please use Microsoft Remote Desktop app connect to ${AZ_LB}.${AZ_LOCATION}.cloudapp.azure.com:5000 or :5001.\\n"
+printf "Please use Microsoft Remote Desktop app connect to ${AZ_LB_DNS}.${AZ_LOCATION}.cloudapp.azure.com:5000 or :5001.\\n"
