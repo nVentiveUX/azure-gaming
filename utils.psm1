@@ -6,6 +6,8 @@ function Registy-tweaks {
   Write-Host -ForegroundColor Cyan "Starting Registy-tweaks function..."
 
   Write-Output "Make the password and account of admin user never expire..."
+  $admin_username = [Environment]::UserName
+  $admin_password = Read-Host 'Admin Password'
   Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
 
   Write-Output "Make the admin login at startup..."
@@ -100,14 +102,16 @@ function Registy-tweaks {
 }
 
 ################################################################################
-# Install Local Experience Packs
-function Install-LanguageExperiencePack {
-  Write-Host -ForegroundColor Cyan "Starting Install-LanguageExperiencePack function..."
+# Install KeyboardLanguage
+function Install-KeyboardLanguage {
+  Write-Host -ForegroundColor Cyan "Starting Install-KeyboardLanguage function..."
 
-  Write-Output "Adding secondary fr-FR keyboard..."
-  $langs = Get-WinUserLanguageList
-  $langs.Add("fr-FR")
-  Set-WinUserLanguageList $langs -Force
+  $lang = "fr-FR"
+
+  Write-Output "Adding secondary keyboard $lang..."
+  $old_langs = Get-WinUserLanguageList
+  $old_langs.Add("$lang")
+  Set-WinUserLanguageList -LanguageList $old_langs -Force
 
   Write-Host -ForegroundColor Green "Done."
 }
