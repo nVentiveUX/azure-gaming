@@ -241,7 +241,7 @@ printf "Create ${AZ_VM} Azure Virtual Machine Scale Set...\\n"
 az vmss create \
     --name "${AZ_VM}" \
     --resource-group "${AZ_VM_RG}" \
-    --image "MicrosoftWindowsDesktop:Windows-10:rs4-pron:17134.590.69" \
+    --image "MicrosoftWindowsDesktop:Windows-10:rs4-pron:latest" \
     --vm-sku "Standard_NV6" \
     --storage-sku "StandardSSD_LRS" \
     --instance-count "1" \
